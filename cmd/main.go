@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"time"
 
@@ -9,15 +8,15 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"golang.org/x/time/rate"
 
-	"Goldenfealla/template-go-echo/config"
-	"Goldenfealla/template-go-echo/internal/repository"
-	"Goldenfealla/template-go-echo/internal/rest"
-	"Goldenfealla/template-go-echo/usecase"
+	"Goldenfealla/aev-comic/config"
+	"Goldenfealla/aev-comic/internal/database/postgres"
+	"Goldenfealla/aev-comic/internal/repository"
+	"Goldenfealla/aev-comic/internal/rest"
+	"Goldenfealla/aev-comic/usecase"
 )
 
 var (
-	isProd = flag.Bool("prod", false, "Enable production mode")
-	e      = echo.New()
+	e = echo.New()
 )
 
 func initMiddleware(cors middleware.CORSConfig) {
@@ -39,21 +38,19 @@ func initMiddleware(cors middleware.CORSConfig) {
 }
 
 func init() {
-	flag.Parse()
-
-	cfg := config.Load(*isProd)
+	cfg := config.Load()
 
 	initMiddleware(cfg.CORS)
+	err := postgres.New(cfg.Env.PostgresURI)
+	if err != nil {
+		log.Fatalf("error init postgres\n error: %v", err)
+	}
 
-	bookRepository := repository.NewBookRepository()
-	bookUsecase := usecase.NewBookUsecase(bookRepository)
-	rest.NewBookHandler(e, bookUsecase)
+	comicRepository := repository.NewComicRepository()
+	comicUsecase := usecase.NewComicUsecase(comicRepository)
+	rest.NewComicHandler(e, comicUsecase)
 }
 
 func main() {
-	if !*isProd {
-		log.Println("Running in Development. To run in Prod use \"-prod\"")
-	}
-
 	e.Start(":3000")
 }

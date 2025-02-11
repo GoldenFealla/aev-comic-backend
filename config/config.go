@@ -25,7 +25,8 @@ const (
 )
 
 type Environment struct {
-	Mode string
+	Mode        string
+	PostgresURI string
 }
 
 type Config struct {
@@ -57,12 +58,19 @@ func loadEnv() Environment {
 	}
 
 	mode := os.Getenv("MODE")
+	postgresURI := os.Getenv("POSTGRES_URI")
+
+	if postgresURI == "" {
+		log.Println("no POSTGRES_URI environment provided.")
+	}
+
 	return Environment{
-		Mode: mode,
+		Mode:        mode,
+		PostgresURI: postgresURI,
 	}
 }
 
-func Load(isProd bool) *Config {
+func Load() *Config {
 	cors := loadCORS()
 	env := loadEnv()
 
