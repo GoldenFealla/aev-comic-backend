@@ -1,8 +1,7 @@
 # https://github.com/labstack/echo/blob/master/middleware/cors.go#L16
 allow_credentials: true
 allow_origins:
-  - localhost:4200
-  - locahost:5173
+  - localhost:5173
   - aevteam.com
 allow_methods:
   - GET
