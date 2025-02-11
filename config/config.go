@@ -54,7 +54,8 @@ func loadCORS() middleware.CORSConfig {
 func loadEnv() Environment {
 	err := godotenv.Load(envPath)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println("no env file in ./config/.env. Try to load from root")
+		godotenv.Load()
 	}
 
 	mode := os.Getenv("MODE")
