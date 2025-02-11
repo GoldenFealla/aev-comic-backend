@@ -3,7 +3,7 @@ allow_credentials: true
 allow_origins:
   - http://localhost:5173
   - http://localhost:4173
-  - aevteam.com
+  - https://aevteam.com
 allow_methods:
   - GET
   - POST
